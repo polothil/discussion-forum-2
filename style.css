@@ -1,0 +1,46 @@
+ul {
+  list-style-type: none;
+}
+
+h3,
+h2 {
+  margin: 0.5rem;
+}
+
+.comment-box {
+  width: 80%;
+  height: 30px;
+  font-size: 15px;
+}
+
+.comment-handle {
+  /* color: blue; */
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.hr {
+  color: rgba(0, 0, 0, 0.15);
+  width: 600px;
+}
+
+.comment-header {
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+}
+
+.comment-input-row {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+.commentsList {
+  margin: 0;
+}
