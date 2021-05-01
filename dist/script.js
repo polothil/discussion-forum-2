@@ -1,23 +1,23 @@
-let commentArr = new Array();
+let commentArr2 = new Array();
 const dummyUsers = ['user1', 'user2', 'user3', 'user4', 'user5'];
 
 const defaultLoad = () => {
-  let commentsString = localStorage.getItem('commentArr');
+  let commentsString = localStorage.getItem('commentArr2');
   if (commentsString !== null) {
-    commentArr = JSON.parse(commentsString);
-    for (let i = 0; i < commentArr.length; i++) {
-      commentArr[i].lastUpdated = new Date(commentArr[i].lastUpdated); // converting to Date Object
-      commentArr[i].upvotes = parseInt(commentArr[i].upvotes); // Converting string to Int
-      commentArr[i].downvotes = parseInt(commentArr[i].downvotes); // Converting string to Int
-      commentArr[i].childrenIds = JSON.parse(commentArr[i].childrenIds); // converting string back to array form
+    commentArr2 = JSON.parse(commentsString);
+    for (let i = 0; i < commentArr2.length; i++) {
+      commentArr2[i].lastUpdated = new Date(commentArr2[i].lastUpdated); // converting to Date Object
+      commentArr2[i].upvotes = parseInt(commentArr2[i].upvotes); // Converting string to Int
+      commentArr2[i].downvotes = parseInt(commentArr2[i].downvotes); // Converting string to Int
+      commentArr2[i].childrenIds = JSON.parse(commentArr2[i].childrenIds); // converting string back to array form
     }
   }
 };
 
-defaultLoad(); // FetchcommentArr(if exists) from localstorage
+defaultLoad(); // FetchcommentArr2(if exists) from localstorage
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (commentArr.length) renderComments();
+  if (commentArr2.length) renderComments();
 
   // Thread Input
   const commentInput = document.getElementById('comment');
@@ -40,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let id = parts[parts.length - 1];
 
       // For reverse Chronology
-      id = commentArr.length - parseInt(id) - 1;
+      id = commentArr2.length - parseInt(id) - 1;
 
-      commentArr[id][type]++;
+      commentArr2[id][type]++;
       renderComments();
       storeComments();
     }
@@ -85,12 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
 let storeComments = () => {
   // Storing comments in stringified array in local storage
   let val = '[';
-  for (let i in commentArr) {
-    val += Comment.toJSONString(commentArr[i]);
-    i != commentArr.length - 1 ? (val += ',') : (val += '');
+  for (let i in commentArr2) {
+    val += Comment.toJSONString(commentArr2[i]);
+    i != commentArr2.length - 1 ? (val += ',') : (val += '');
   }
   val += ']';
-  localStorage.setItem('commentArr', val);
+  localStorage.setItem('commentArr2', val);
 };
 
 let renderComment = (comment) => {
@@ -119,14 +119,14 @@ let renderComment = (comment) => {
     listElem += `<ul id="childlist-${id}">`;
 
     comment.childrenIds.forEach((childrenId) => {
-      commentArr.forEach((comment, index) => {
+      commentArr2.forEach((comment, index) => {
         if (comment.id == childrenId) {
-          listElem += renderComment(commentArr[index]);
+          listElem += renderComment(commentArr2[index]);
           return;
         }
       });
 
-      // listElem += renderComment(commentArr[commentId]);
+      // listElem += renderComment(commentArr2[commentId]);
     });
     listElem += '</ul>';
   }
@@ -138,7 +138,7 @@ let renderComment = (comment) => {
 // Pass parent comment from rootComments to renderComment
 let renderComments = () => {
   let rootComments = [];
-  commentArr.forEach((comment) => {
+  commentArr2.forEach((comment) => {
     if (comment.parentId === null || comment.parentId == 'null') {
       rootComments.push(comment);
     }
@@ -153,12 +153,12 @@ let renderComments = () => {
 
 // Adding new comment to memory and UI
 let addComment = (name, content, parent) => {
-  let comment = new Comment(commentArr.length, name, content, 0, 0, parent);
-  commentArr.unshift(comment); //unshift instead of push for reverse chronology
+  let comment = new Comment(commentArr2.length, name, content, 0, 0, parent);
+  commentArr2.unshift(comment); //unshift instead of push for reverse chronology
   if (parent != null) {
-    commentArr.forEach((comment) => {
+    commentArr2.forEach((comment) => {
       if (parseInt(comment.id) === parseInt(parent)) {
-        comment.childrenIds.unshift(commentArr.length - 1); //unshift instead of push for reverse chronology
+        comment.childrenIds.unshift(commentArr2.length - 1); //unshift instead of push for reverse chronology
       }
     });
   }
