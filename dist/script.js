@@ -158,7 +158,7 @@ let addComment = (name, content, parent) => {
   if (parent != null) {
     commentArr.forEach((comment) => {
       if (parseInt(comment.id) === parseInt(parent)) {
-        comment.childrenIds.push(commentArr.length - 1);
+        comment.childrenIds.unshift(commentArr.length - 1); //unshift instead of push for reverse chronology
       }
     });
   }
