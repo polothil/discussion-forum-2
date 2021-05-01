@@ -193,25 +193,43 @@ class Comment {
 }
 
 let timeAgo = (date) => {
-  let currentDate = new Date();
-  let yearDiff = currentDate.getFullYear() - date.getFullYear();
+  // Record end time
+  let endTime = new Date();
 
-  if (yearDiff > 0) return `${yearDiff} year${yearDiff == 1 ? '' : 's'} ago`;
+  // Compute time difference in milliseconds
+  let timeDiff = endTime.getTime() - date.getTime();
 
-  let monthDiff = currentDate.getMonth() - date.getMonth();
-  if (monthDiff > 0) return `${monthDiff} month${monthDiff == 1 ? '' : 's'} ago`;
+  // Convert time difference from milliseconds to seconds
+  timeDiff = timeDiff / 1000;
 
-  let dateDiff = currentDate.getDate() - date.getDate();
-  if (dateDiff > 0) return `${dateDiff} day${dateDiff == 1 ? '' : 's'} ago`;
+  // Extract integer seconds that dont form a minute using %
+  let seconds = Math.floor(timeDiff % 60); //ignoring incomplete seconds (floor)
 
-  let hourDiff = currentDate.getHours() - date.getHours();
-  if (hourDiff > 0) return `${hourDiff} hour${hourDiff == 1 ? '' : 's'} ago`;
+  // Convert time difference from seconds to minutes using %
+  timeDiff = Math.floor(timeDiff / 60);
 
-  let minuteDiff = currentDate.getMinutes() - date.getMinutes();
-  if (minuteDiff > 0) return `${minuteDiff} minute${minuteDiff == 1 ? '' : 's'} ago`;
+  // Extract integer minutes that don't form an hour using %
+  let minutes = timeDiff % 60; //no need to floor possible incomplete minutes, becase they've been handled as seconds
 
-  let secondDiff = currentDate.getSeconds() - date.getSeconds();
-  if (secondDiff > 0) return `${secondDiff} second${secondDiff == 1 ? '' : 's'} ago`;
+  // Convert time difference from minutes to hours
+  timeDiff = Math.floor(timeDiff / 60);
 
-  return `just now`;
+  // Extract integer hours that don't form a day using %
+  let hours = timeDiff % 24; //no need to floor possible incomplete hours, becase they've been handled as seconds
+
+  // Convert time difference from hours to days
+  timeDiff = Math.floor(timeDiff / 24);
+
+  // The rest of timeDiff is number of days
+  let days = timeDiff;
+
+  if (days > 0) {
+    return `${days} days ago`;
+  } else if (hours > 0) {
+    return `${hours} hours ago`;
+  } else if (minutes > 0) {
+    return `${minutes} minutes ago`;
+  } else if (seconds > 0) {
+    return `${seconds} seconds ago`;
+  } else return `just now`;
 };
