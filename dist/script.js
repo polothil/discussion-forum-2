@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Thread Input
   const commentInput = document.getElementById('comment');
   commentInput.addEventListener('keyup', (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && commentInput.value != '') {
       let content = commentInput.value;
       let name = dummyUsers[Math.floor(Math.random() * 5)];
       addComment(name, content, null);
@@ -38,6 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let parts = e.target.id.split('-');
       let type = parts[0];
       let id = parts[parts.length - 1];
+
+      // For reverse Chronology
+      id = commentArr.length - parseInt(id) - 1;
+
       commentArr[id][type]++;
       renderComments();
       storeComments();
@@ -64,10 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
         childListElem.innerHTML = inputElem + childListElem.innerHTML;
       }
 
-      // Added to get text input enter to replace add button
+      // Added to get text input en+ter to replace add button
       const replyInput = document.getElementById(`content-${id}`);
       replyInput.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' && replyInput.value != '') {
           let content = replyInput.value;
           let name = dummyUsers[Math.floor(Math.random() * 5)];
           addComment(name, content, id);
@@ -113,12 +117,21 @@ let renderComment = (comment) => {
 			</div>`;
   if (comment.childrenIds.length != 0) {
     listElem += `<ul id="childlist-${id}">`;
-    comment.childrenIds.forEach((commentId) => {
-      listElem += renderComment(commentArr[commentId]);
+
+    comment.childrenIds.forEach((childrenId) => {
+      commentArr.forEach((comment, index) => {
+        if (comment.id == childrenId) {
+          listElem += renderComment(commentArr[index]);
+          return;
+        }
+      });
+
+      // listElem += renderComment(commentArr[commentId]);
     });
     listElem += '</ul>';
   }
   listElem += '</li>';
+  // console.log(comment.timeValue);
   return listElem;
 };
 
@@ -131,6 +144,7 @@ let renderComments = () => {
     }
   });
   let commentList = '';
+
   rootComments.forEach((comment) => {
     commentList += renderComment(comment);
   });
@@ -140,9 +154,13 @@ let renderComments = () => {
 // Adding new comment to memory and UI
 let addComment = (name, content, parent) => {
   let comment = new Comment(commentArr.length, name, content, 0, 0, parent);
-  commentArr.push(comment);
+  commentArr.unshift(comment); //unshift instead of push for reverse chronology
   if (parent != null) {
-    commentArr[parent].childrenIds.push(commentArr.length - 1);
+    commentArr.forEach((comment) => {
+      if (parseInt(comment.id) === parseInt(parent)) {
+        comment.childrenIds.push(commentArr.length - 1);
+      }
+    });
   }
   storeComments();
   renderComments();
